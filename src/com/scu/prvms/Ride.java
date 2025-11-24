@@ -4,13 +4,16 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * Represents a theme park ride, managing visitor queues, ride history, and cycle operations.
- * Will implement RideInterface in subsequent modules.
+ * Represents a theme park ride, implementing RideInterface to manage queues, history, and cycles.
  */
-public class Ride {
-    private String rideId;    // Unique identifier for the ride
-    private String rideName;  // Name of the ride
-    private Employee operator;// Employee operating the ride
+public class Ride implements RideInterface {
+    private String rideId;
+    private String rideName;
+    private Employee operator;
+    private Queue<Visitor> waitingLine = new LinkedList<>(); // FIFO queue for waiting visitors
+    private LinkedList<Visitor> rideHistory = new LinkedList<>(); // History of visitors who rode
+    private int maxRider; // Maximum visitors per cycle
+    private int numOfCycles = 0; // Number of cycles the ride has run
 
     /**
      * Default constructor for Ride.
@@ -22,28 +25,29 @@ public class Ride {
      * @param rideId Unique ride ID
      * @param rideName Ride name
      * @param operator Employee operating the ride
+     * @param maxRider Maximum visitors per cycle
      */
-    public Ride(String rideId, String rideName, Employee operator) {
+    public Ride(String rideId, String rideName, Employee operator, int maxRider) {
         this.rideId = rideId;
         this.rideName = rideName;
         this.operator = operator;
+        this.maxRider = maxRider;
     }
 
-    /**
-     * @return The ride's unique ID
-     */
-    public String getRideId() { return rideId; }
-    public void setRideId(String rideId) { this.rideId = rideId; }
+    public int getMaxRider() { return maxRider; }
+    public void setMaxRider(int maxRider) { this.maxRider = maxRider; }
+    public int getNumOfCycles() { return numOfCycles; }
+    public void setNumOfCycles(int numOfCycles) { this.numOfCycles = numOfCycles; }
+    public Queue<Visitor> getWaitingLine() { return waitingLine; }
+    public LinkedList<Visitor> getRideHistory() { return rideHistory; }
 
-    /**
-     * @return The ride's name
-     */
-    public String getRideName() { return rideName; }
-    public void setRideName(String rideName) { this.rideName = rideName; }
-
-    /**
-     * @return The employee operating the ride
-     */
-    public Employee getOperator() { return operator; }
-    public void setOperator(Employee operator) { this.operator = operator; }
+    // Interface method stubs (to be implemented in subsequent modules)
+    @Override public void addVisitorToQueue(Visitor visitor) {}
+    @Override public void removeVisitorFromQueue() {}
+    @Override public void printQueue() {}
+    @Override public void addVisitorToHistory(Visitor visitor) {}
+    @Override public boolean checkVisitorFromHistory(Visitor visitor) { return false; }
+    @Override public int numberOfVisitors() { return 0; }
+    @Override public void printRideHistory() {}
+    @Override public void runOneCycle() {}
 }
