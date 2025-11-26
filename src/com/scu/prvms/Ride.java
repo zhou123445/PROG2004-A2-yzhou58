@@ -2,6 +2,7 @@ package com.scu.prvms;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Iterator;
 
 /**
  * Represents a theme park ride, implementing RideInterface to manage queues, history, and cycles.
@@ -87,18 +88,62 @@ public class Ride implements RideInterface {
         }
     }
 
+    // Part4A: History Operations
+    /**
+     * Adds a visitor to the ride's history of riders.
+     * @param visitor Visitor to add; if null, prints an error message
+     */
     @Override
-    public void addVisitorToHistory(Visitor visitor) {}
+    public void addVisitorToHistory(Visitor visitor) {
+        if (visitor == null) {
+            System.out.println("Failed: Cannot add null visitor to history");
+            return;
+        }
+        rideHistory.add(visitor);
+        System.out.println("Success: Visitor " + visitor.getName() + " added to " + rideName + " history");
+    }
+
+    /**
+     * Checks if a visitor exists in the ride's history (matches by ticket number).
+     * @param visitor Visitor to check; returns false if null or history is empty
+     * @return True if the visitor is found, false otherwise
+     */
+    @Override
+    public boolean checkVisitorFromHistory(Visitor visitor) {
+        if (visitor == null || rideHistory.isEmpty()) return false;
+        for (Visitor v : rideHistory) {
+            if (v.getTicketNumber().equals(visitor.getTicketNumber())) return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return The number of visitors in the ride's history
+     */
+    @Override
+    public int numberOfVisitors() {
+        return rideHistory.size();
+    }
+
+    /**
+     * Prints all visitors in the ride's history using an Iterator.
+     */
+    @Override
+    public void printRideHistory() {
+        System.out.println(rideName + " Ride History (" + rideHistory.size() + " visitors):");
+        if (rideHistory.isEmpty()) {
+            System.out.println("No records");
+            return;
+        }
+        Iterator<Visitor> it = rideHistory.iterator();
+        int index = 1;
+        while (it.hasNext()) {
+            System.out.println(index + ". " + it.next().toString());
+            index++;
+        }
+    }
 
     @Override
-    public boolean checkVisitorFromHistory(Visitor visitor) { return false; }
-
-    @Override
-    public int numberOfVisitors() { return 0; }
-
-    @Override
-    public void printRideHistory() {}
-
-    @Override
-    public void runOneCycle() {}
+    public void runOneCycle() {
+    }
 }
