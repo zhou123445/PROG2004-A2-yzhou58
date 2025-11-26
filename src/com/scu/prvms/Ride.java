@@ -3,6 +3,7 @@ package com.scu.prvms;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Iterator;
+import java.util.Collections;
 
 /**
  * Represents a theme park ride, implementing RideInterface to manage queues, history, and cycles.
@@ -142,7 +143,19 @@ public class Ride implements RideInterface {
             index++;
         }
     }
-
+    // Part4B: History Sorting
+    /**
+     * Sorts the ride history records. Rule: Members come first, then sort by name in ascending order.
+     * If the history is empty, prints an error message and terminates sorting.
+     */
+    public void sortRideHistory() {
+        if (rideHistory.isEmpty()) {
+            System.out.println("Failed: History is empty, cannot sort");
+            return;
+        }
+        Collections.sort(rideHistory, new VisitorComparator());
+        System.out.println("Success: History sorted (members first, name ascending)");
+    }
     @Override
     public void runOneCycle() {
     }
