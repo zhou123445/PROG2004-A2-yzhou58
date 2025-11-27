@@ -156,7 +156,98 @@ public class Ride implements RideInterface {
         Collections.sort(rideHistory, new VisitorComparator());
         System.out.println("Success: History sorted (members first, name ascending)");
     }
+    // Part5: Ride Cycle Execution
+    /**
+     * Executes a complete ride cycle: checking, loading, running, unloading, and recording history.
+     * This method implements the RideInterface's runOneCycle method.
+     */
     @Override
     public void runOneCycle() {
+        System.out.println("\n==============================================");
+        System.out.println("=== Starting Ride Cycle for " + this.rideName + " ===");
+
+        // 1. Check if the ride can start (at least one visitor in queue)
+        if (!canStartRide()) {
+            System.out.println("Cannot start ride. The waiting queue is empty.");
+            System.out.println("==============================================");
+            return;
+        }
+
+        // 2. Load visitors from queue to the ride
+        LinkedList<Visitor> currentPassengers = loadVisitors();
+
+        // 3. Simulate the ride in progress
+        simulateRide();
+
+        // 4. Unload visitors and record them to history
+        unloadAndRecordHistory(currentPassengers);
+
+        // 5. Increment the cycle count
+        this.numOfCycles++;
+
+        System.out.println("=== Ride Cycle Completed Successfully ===");
+        System.out.println("==============================================");
+    }
+
+    /**
+     * Helper method to check if the ride can start.
+     * @return true if there is at least one visitor in the waiting queue.
+     */
+    private boolean canStartRide() {
+        if (operator == null) {
+            System.out.println("Cannot start ride. No operator assigned.");
+            return false;
+        }
+        if (waitingLine.isEmpty()) {
+            System.out.println("Cannot start ride. The waiting queue is empty.");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Helper method to load visitors from the waiting queue.
+     * It will load up to the ride's maximum capacity.
+     * @return A list of visitors that have been loaded onto the ride.
+     */
+    private LinkedList<Visitor> loadVisitors() {
+        System.out.println("\nLoading visitors...");
+        LinkedList<Visitor> currentPassengers = new LinkedList<>();
+        int visitorsToLoad = Math.min(this.maxRider, this.waitingLine.size());
+
+        for (int i = 0; i < visitorsToLoad; i++) {
+            Visitor visitor = this.waitingLine.poll(); // Removes from queue
+            currentPassengers.add(visitor); // Adds to current passengers
+            System.out.println("Loaded: " + visitor.getName());
+        }
+        System.out.println("Loaded " + currentPassengers.size() + " visitors.");
+        return currentPassengers;
+    }
+
+    /**
+     * Helper method to simulate the ride duration.
+     */
+    private void simulateRide() {
+        System.out.println("\nRide is now in progress... Enjoy!");
+        try {
+            // Simulate a 2-second ride
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            System.out.println("Ride was interrupted.");
+            Thread.currentThread().interrupt(); // Restore interrupt status
+        }
+    }
+
+    /**
+     * Helper method to unload visitors and record their ride in history.
+     * @param currentPassengers The list of visitors to unload and record.
+     */
+    private void unloadAndRecordHistory(LinkedList<Visitor> currentPassengers) {
+        System.out.println("\nUnloading visitors and recording history...");
+        for (Visitor visitor : currentPassengers) {
+            this.rideHistory.add(visitor); // Add to history
+            System.out.println("Unloaded and recorded: " + visitor.getName());
+        }
+        System.out.println("All visitors have been unloaded.");
     }
 }

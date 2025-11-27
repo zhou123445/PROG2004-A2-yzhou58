@@ -9,6 +9,7 @@ public class AssignmentTwo {
         demo.partThree();
         demo.partFourA(); // Add: Call history management test
         demo.partFourB(); // Add: Call history sorting test
+        demo.partFive();
     }
 
     /** Demo method for Part 3: Queue Management */
@@ -84,7 +85,65 @@ public class AssignmentTwo {
     }
 
     /** Demo method for Part 5: Ride Cycle Execution */
-    public void partFive() {}
+    public void partFive() {
+        // Print a header to clearly indicate the start of this demonstration
+        System.out.println("\n=== Part5: Ride Cycle Execution Demo ===");
+
+        // --- 1. Initialize Test Data ---
+        // Create an Employee object to act as the ride operator
+        Employee rideOperator = new Employee("E001", "Mr. Zhang", "13800138000", "EMP001", "Morning");
+
+        // Create a Ride object (Roller Coaster) with a maximum capacity of 2 visitors
+        Ride rollerCoaster = new Ride("R001", "Roller Coaster", rideOperator, 2);
+
+        // Create 10 Visitor objects (mix of members and non-members) to populate the queue
+        Visitor v1 = new Visitor("V001", "Xiao Ming", "13900139001", "T001", true);   // Member
+        Visitor v2 = new Visitor("V002", "Xiao Hong", "13900139002", "T002", false);  // Non-Member
+        Visitor v3 = new Visitor("V003", "Xiao Gang", "13900139003", "T003", true);   // Member
+        Visitor v4 = new Visitor("V004", "Xiao Li", "13900139004", "T004", false);    // Non-Member
+        Visitor v5 = new Visitor("V005", "Xiao Qiang", "13900139005", "T005", true);  // Member
+        Visitor v6 = new Visitor("V006", "Xiao Mei", "13900139006", "T006", false);   // Non-Member
+        Visitor v7 = new Visitor("V007", "Xiao Liang", "13900139007", "T007", true);  // Member
+        Visitor v8 = new Visitor("V008", "Xiao Min", "13900139008", "T008", false);   // Non-Member
+        Visitor v9 = new Visitor("V009", "Xiao Yu", "13900139009", "T009", true);     // Member
+        Visitor v10 = new Visitor("V010", "Xiao Qi", "13900139010", "T010", false);   // Non-Member
+
+        // Add all created visitors to the ride's waiting queue (FIFO order)
+        rollerCoaster.addVisitorToQueue(v1);
+        rollerCoaster.addVisitorToQueue(v2);
+        rollerCoaster.addVisitorToQueue(v3);
+        rollerCoaster.addVisitorToQueue(v4);
+        rollerCoaster.addVisitorToQueue(v5);
+        rollerCoaster.addVisitorToQueue(v6);
+        rollerCoaster.addVisitorToQueue(v7);
+        rollerCoaster.addVisitorToQueue(v8);
+        rollerCoaster.addVisitorToQueue(v9);
+        rollerCoaster.addVisitorToQueue(v10);
+
+        // --- 2. Pre-Cycle State Validation ---
+        System.out.println("\n=== Pre-Cycle State ===");
+        System.out.println("Waiting Queue (before cycle):");
+        rollerCoaster.printQueue(); // Display the full queue (10 visitors) before the ride cycle
+
+        // --- 3. Execute the Ride Cycle ---
+        // This single method call encapsulates the entire ride process:
+        // Check → Load → Simulate → Unload → Record History
+        rollerCoaster.runOneCycle();
+
+        // --- 4. Post-Cycle State Validation ---
+        System.out.println("\n=== Post-Cycle State ===");
+
+        // Validate queue modification: should contain 8 visitors (first 2 removed)
+        System.out.println("Waiting Queue (after cycle):");
+        rollerCoaster.printQueue();
+
+        // Validate history recording: should contain the 2 visitors who just rode
+        System.out.println("\nRide History (after cycle):");
+        rollerCoaster.printRideHistory();
+
+        // Validate cycle counter increment: should now be 1
+        System.out.println("\nTotal Cycles Executed: " + rollerCoaster.getNumOfCycles());
+    }
 
     /** Demo method for Part 6: File Export */
     public void partSix() {}
