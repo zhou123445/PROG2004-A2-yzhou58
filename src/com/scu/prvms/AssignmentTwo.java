@@ -10,6 +10,7 @@ public class AssignmentTwo {
         demo.partFourA(); // Add: Call history management test
         demo.partFourB(); // Add: Call history sorting test
         demo.partFive();
+        demo.partSixSevenFileIO();
     }
 
     /** Demo method for Part 3: Queue Management */
@@ -146,8 +147,38 @@ public class AssignmentTwo {
     }
 
     /** Demo method for Part 6: File Export */
-    public void partSix() {}
+    public void partSixSevenFileIO() {
+        System.out.println("\n=== Part6-7: File I/O (Export & Import) Demo ===");
+        Employee operator = new Employee("E001", "Mr. Zhang", "13800138000", "EMP001", "Morning");
+        Ride rollerCoaster = new Ride("R001", "Roller Coaster", operator, 2);
+        String csvFilePath = "ride_history.csv"; // File path (saved in project root directory)
 
-    /** Demo method for Part 7: File Import */
-    public void partSeven() {}
+        // 1. Prepare test data for export
+        Visitor v1 = new Visitor("V001", "Xiao Ming", "13900139001", "T001", true);
+        Visitor v2 = new Visitor("V002", "Xiao Hong", "13900139002", "T002", false);
+        Visitor v3 = new Visitor("V003", "Xiao Gang", "13900139003", "T003", true);
+        rollerCoaster.addVisitorToHistory(v1);
+        rollerCoaster.addVisitorToHistory(v2);
+        rollerCoaster.addVisitorToHistory(v3);
+
+        // 2. Export history to CSV file
+        System.out.println("\n[Step 1: Export Ride History to CSV]");
+        System.out.println("History before export (count: " + rollerCoaster.numberOfVisitors() + "):");
+        rollerCoaster.printRideHistory();
+
+        rollerCoaster.exportRideHistory(csvFilePath);
+
+        // 3. Clear existing history to test import (avoids mixing old/new data)
+        System.out.println("\n[Step 2: Clear History for Import Validation]");
+        rollerCoaster.getRideHistory().clear();
+        System.out.println("History after clear (count: " + rollerCoaster.numberOfVisitors() + "):");
+        rollerCoaster.printRideHistory();
+
+        // 4. Import history from CSV file and verify
+        System.out.println("\n[Step 3: Import Ride History from CSV]");
+        rollerCoaster.importRideHistory(csvFilePath);
+
+        System.out.println("History after import (count: " + rollerCoaster.numberOfVisitors() + "):");
+        rollerCoaster.printRideHistory();
+    }
 }

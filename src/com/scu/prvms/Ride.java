@@ -4,6 +4,11 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Iterator;
 import java.util.Collections;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 /**
  * Represents a theme park ride, implementing RideInterface to manage queues, history, and cycles.
@@ -249,5 +254,52 @@ public class Ride implements RideInterface {
             System.out.println("Unloaded and recorded: " + visitor.getName());
         }
         System.out.println("All visitors have been unloaded.");
+    }
+    public void exportRideHistory(String filePath) {
+        System.out.println("\n=== Exporting History to " + filePath + " ===");
+        if (rideHistory.isEmpty()) {
+            System.out.println("Failed: History is empty, no need to export");
+            return;
+        }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (Visitor v : rideHistory) {
+                String line = v.getId() + "," + v.getName() + "," + v.getContact() + "," + v.getTicketNumber() + "," + v.isMember();
+                writer.write(line);
+                writer.newLine();
+            }
+            System.out.println("Success: Export completed");
+        } catch (IOException e) {
+            System.out.println("Failed: Export error - " + e.getMessage());
+        }
+    }
+    public void importRideHistory(String filePath) {
+        System.out.println("\n=== Importing History from " + filePath + " ===");
+        rideHistory.clear();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            int count = 0;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+                String[] fields = line.split(",");
+                if (fields.length != 5) {
+                    System.out.println("Warning: Skipping invalid line - " + line);
+                    continue;
+                }
+                try {
+                    String id = fields[0].trim();
+                    String name = fields[1].trim();
+                    String contact = fields[2].trim();
+                    String ticket = fields[3].trim();
+                    boolean isMember = Boolean.parseBoolean(fields[4].trim());
+                    rideHistory.add(new Visitor(id, name, contact, ticket, isMember));
+                    count++;
+                } catch (Exception e) {
+                    System.out.println("Warning: Skipping malformed line - " + line);
+                }
+            }
+            System.out.println("Success: Imported " + count + " records");
+        } catch (IOException e) {
+            System.out.println("Failed: Import error - " + e.getMessage());
+        }
     }
 }
