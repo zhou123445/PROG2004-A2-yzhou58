@@ -11,16 +11,22 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 /**
- * Represents a theme park ride, implementing RideInterface to manage queues, history, and cycles.
+ * Represents a theme park ride, implementing {@link RideInterface} to manage core functionalities.
+ * <p>Key responsibilities mapped to Assignment 2 modules:
+ * - Part3: Queue operations (add/remove/print waiting visitors)
+ * - Part4A: Ride history management (add/check/count/print visitors)
+ * - Part4B: History sorting (using {@link VisitorComparator})
+ * - Part5: Full ride cycle execution (check→load→simulate→unload→record)
+ * - Part6-7: File I/O (export/import history to/from CSV)
  */
 public class Ride implements RideInterface {
     private String rideId;
     private String rideName;
     private Employee operator;
-    private Queue<Visitor> waitingLine = new LinkedList<>(); // FIFO queue for waiting visitors
-    private LinkedList<Visitor> rideHistory = new LinkedList<>(); // History of visitors who rode
-    private int maxRider; // Maximum visitors per cycle
-    private int numOfCycles = 0; // Number of cycles the ride has run
+    private Queue<Visitor> waitingLine = new LinkedList<>(); // FIFO queue for waiting visitors (LinkedList: efficient add/remove at both ends)
+    private LinkedList<Visitor> rideHistory = new LinkedList<>(); // History of riders (LinkedList: efficient for sorting and iteration)
+    private int maxRider; // Maximum visitors per cycle (enforces ride capacity)
+    private int numOfCycles = 0; // Number of completed ride cycles (tracks ride usage)
 
     /**
      * Default constructor for Ride.
@@ -150,8 +156,9 @@ public class Ride implements RideInterface {
     }
     // Part4B: History Sorting
     /**
-     * Sorts the ride history records. Rule: Members come first, then sort by name in ascending order.
-     * If the history is empty, prints an error message and terminates sorting.
+     * Sorts the ride history using {@link VisitorComparator}.
+     * <p>Sort Rule: 1. Members (isMember=true) come first; 2. Non-members sorted by name (ascending order)
+     * @see VisitorComparator for detailed sorting logic
      */
     public void sortRideHistory() {
         if (rideHistory.isEmpty()) {
@@ -236,10 +243,10 @@ public class Ride implements RideInterface {
         System.out.println("\nRide is now in progress... Enjoy!");
         try {
             // Simulate a 2-second ride
-            Thread.sleep(2000);
+            Thread.sleep(2000);// Simulate 2-second ride duration (mimics real ride time)
         } catch (InterruptedException e) {
             System.out.println("Ride was interrupted.");
-            Thread.currentThread().interrupt(); // Restore interrupt status
+            Thread.currentThread().interrupt(); // Restore interrupt status: let caller handle the interrupt if needed
         }
     }
 
@@ -255,6 +262,12 @@ public class Ride implements RideInterface {
         }
         System.out.println("All visitors have been unloaded.");
     }
+    /**
+     * Exports ride history to a CSV file.
+     * <p>CSV Format (each line): id,name,contact,ticketNumber,isMember (e.g., "V001,Xiao Ming,13900139001,T001,true")
+     * @param filePath Target file path (e.g., "ride_history.csv")
+     * @throws IOException If file write fails (handled internally with error message)
+     */
     public void exportRideHistory(String filePath) {
         System.out.println("\n=== Exporting History to " + filePath + " ===");
         if (rideHistory.isEmpty()) {
@@ -272,6 +285,13 @@ public class Ride implements RideInterface {
             System.out.println("Failed: Export error - " + e.getMessage());
         }
     }
+    /**
+     * Imports ride history from a CSV file, replacing existing history.
+     * <p>Requires CSV lines to match format: id,name,contact,ticketNumber,isMember
+     * @param filePath Source file path (e.g., "ride_history.csv")
+     * @throws IOException If file read fails (handled internally with error message)
+     * @throws IllegalArgumentException If line format is invalid (skipped with warning)
+     */
     public void importRideHistory(String filePath) {
         System.out.println("\n=== Importing History from " + filePath + " ===");
         rideHistory.clear();
